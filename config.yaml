@@ -16,10 +16,10 @@ noise_floor_params:
   #   f(x)_noise-floor = base_amplitude + f(x)_high-energy + f(x)_low-energy
 
   base_amplitude: 30 # Overall base amplitude of the noise floor (where it will exist on the y-axis)
-  high_energy_amplitude: 10  # Amplitude of the high_energy part of the noise floor
-  high_energy_frequency: 100  # Frequency of the high_energy part of the noise floor in Hz
-  low_energy_amplitude: 5 # Amplitude of low_energy (undulating) part of the noise floor
-  low_energy_frequency: 5 # Frequency of the low_energy (undulating) part of the noise floor
+  high_energy_amplitude: 3  # Amplitude of the high_energy part of the noise floor
+  high_energy_frequency: 1000  # Frequency of the high_energy part of the noise floor in Hz
+  low_energy_amplitude: 1 # Amplitude of low_energy (undulating) part of the noise floor
+  low_energy_frequency: .01 # Frequency of the low_energy (undulating) part of the noise floor
 
 signal_spike_params:
   # Signal spikes are modeled as Gaussian curves.
@@ -38,4 +38,8 @@ signal_spike_params:
 
   - amplitude: 50  # Amplitude of the second signal spike
     mu: 600  # Center frequency of the second spike in Hz
+    sigma: 10  # Width of the second spike
+
+  - amplitude: 50  # Amplitude of the second signal spike
+    mu: 650  # Center frequency of the second spike in Hz
     sigma: 10  # Width of the second spike

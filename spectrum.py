@@ -1,9 +1,9 @@
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import yaml
 
 
-class spectrum_graph:
+class spectrum:
     """
     A class representing a spectrum graph.
 
@@ -59,24 +59,24 @@ class spectrum_graph:
     def generate_noise_floor(self):
         '''
         Generate noise floor data (e.g. high-frequency sine wave). It's actually two waves. 
-        noise_floor_energetic is a high frequency wave (to look like static noise). 
-        noise_floor_base is a very low frequency wave (to make the whole thing look wavy).
+        noise_floor_high_energy is a high frequency wave (to look like static noise). 
+        noise_floor_low_energy is a very low frequency wave (to make the whole thing look wavy).
         '''
 
         # Create expression for energetic portion of noise floor
-        noise_floor_energetic_amplitude = self.noise_floor_params['energetic_amplitude']
-        noise_floor_energetic_frequency = self.noise_floor_params['energetic_frequency']
+        noise_floor_high_energy_amplitude = self.noise_floor_params['high_energy_amplitude']
+        noise_floor_high_energy_frequency = self.noise_floor_params['high_energy_frequency']
 
-        noise_floor_energetic = noise_floor_energetic_amplitude * np.sin(noise_floor_energetic_frequency * self.frequency_range)
+        noise_floor_high_energy = noise_floor_high_energy_amplitude * np.sin(noise_floor_high_energy_frequency * self.frequency_range)
 
         # Create expression for base portion of noise floor
-        noise_floor_base_amplitude = self.noise_floor_params['base_amplitude']
-        noise_floor_base_frequency = self.noise_floor_params['base_frequency']
+        noise_floor_low_energy_amplitude = self.noise_floor_params['low_energy_amplitude']
+        noise_floor_low_energy_frequency = self.noise_floor_params['low_energy_frequency']
 
-        noise_floor_base = noise_floor_base_amplitude * np.sin(noise_floor_base_frequency * self.frequency_range)
+        noise_floor_low_energy = noise_floor_low_energy_amplitude * np.sin(noise_floor_low_energy_frequency * self.frequency_range)
 
         # Add together each part including the base amplitude to make a squiggly wave that undulates up and down a bit
-        noise_floor = self.noise_floor_params.base_amplitude + noise_floor_energetic + noise_floor_base
+        noise_floor = self.noise_floor_params['base_amplitude'] + noise_floor_low_energy + noise_floor_high_energy 
 
         return noise_floor
     
@@ -104,7 +104,7 @@ class spectrum_graph:
         Create a matplotlib plot of the spectrum graph
         '''
 
-        plt.figure(figsize=(10,6))
+        plt.figure(figsize=(20,8))
         plt.plot(self.frequency_range, self.generate_spectrum_graph())
         plt.xlabel('Frequency')
         plt.ylabel('Amplitude')
