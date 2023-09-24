@@ -4,11 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyaudio = "*"
-numpy = "*"
 matplotlib = "*"
+numpy = "*"
+pipenv = "*"
+pyyaml = "*"
 
 [dev-packages]
+ipykernel = "*"
 
 [requires]
 python_version = "3.11"

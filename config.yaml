@@ -1,0 +1,45 @@
+frequency_range:
+  start: 0
+  end: 1000  # Define your frequency range in Hz
+  num_points: 1000  # Number of data points
+
+noise_floor_params:
+  # Noise floor is two sine waves put together.
+  # One 'high_energy' one that looks like messy static
+  # One 'low_energy' one that causes the whole floor to look wavy
+  # Equation that these will be plugged into:
+  #
+  #    f(x) = amplitude * sin(freq * x)
+  #
+  # Will end up returning a wave made up of three parts:
+  #
+  #   f(x)_noise-floor = base_amplitude + f(x)_high-energy + f(x)_low-energy
+
+  base_amplitude: 30 # Overall base amplitude of the noise floor (where it will exist on the y-axis)
+  high_energy_amplitude: 3  # Amplitude of the high_energy part of the noise floor
+  high_energy_frequency: 1000  # Frequency of the high_energy part of the noise floor in Hz
+  low_energy_amplitude: 1 # Amplitude of low_energy (undulating) part of the noise floor
+  low_energy_frequency: .01 # Frequency of the low_energy (undulating) part of the noise floor
+
+signal_spike_params:
+  # Signal spikes are modeled as Gaussian curves.
+  # Equation that each spike's parameters will be plugged into:
+  # 
+  #   f(x) = amplitude * e^(-0.5 * ((x - mu)^2)/sigma^2)
+  #
+  #   Where: 
+  #     amp = amplitude of the peak
+  #     mu = Mean, or central position of the peak
+  #     sigma = standard deviation or widith of the peak
+
+  - amplitude: 50  # Amplitude of the first signal spike
+    mu: 200  # Center frequency of the first spike in Hz
+    sigma: 10  # Width of the first spike
+
+  - amplitude: 50  # Amplitude of the second signal spike
+    mu: 600  # Center frequency of the second spike in Hz
+    sigma: 10  # Width of the second spike
+
+  - amplitude: 50  # Amplitude of the second signal spike
+    mu: 650  # Center frequency of the second spike in Hz
+    sigma: 10  # Width of the second spike
