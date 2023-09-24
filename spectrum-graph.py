@@ -29,8 +29,8 @@ class spectrum_graph:
     def initialize_parameters(self):
         #Extract Frequency Range parameters from config
         self.frequency_range = np.linspace(
-            self.config['frequency_range']['start']
-            self.config['frequency_range']['end']
+            self.config['frequency_range']['start'],
+            self.config['frequency_range']['end'],
             self.config['frequency_range']['num_points']
         )
 
@@ -105,7 +105,7 @@ class spectrum_graph:
         '''
 
         plt.figure(figsize=(10,6))
-        plt.plot(self.frequency_rangem self.generate_spectrum_graph())
+        plt.plot(self.frequency_range, self.generate_spectrum_graph())
         plt.xlabel('Frequency')
         plt.ylabel('Amplitude')
         plt.title('Spectrum Analyzer')
