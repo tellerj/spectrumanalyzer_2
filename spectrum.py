@@ -104,10 +104,15 @@ class spectrum:
         Create a matplotlib plot of the spectrum graph
         '''
 
-        plt.figure(figsize=(20,8))
+        plt.figure(figsize=(18,8))
         plt.plot(self.frequency_range, self.generate_spectrum_graph())
         plt.xlabel('Frequency')
         plt.ylabel('Amplitude')
         plt.title('Spectrum Analyzer')
         plt.grid(True)
-        plt.show()
+
+        # Save the plot as an image in the static folder
+        plt.savefig('web/static/spectrum_plot.png')
+
+        # Close the plot to save resources
+        plt.close()

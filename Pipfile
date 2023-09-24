@@ -8,6 +8,7 @@ matplotlib = "*"
 numpy = "*"
 pipenv = "*"
 pyyaml = "*"
+flask-wtf = "*"
 
 [dev-packages]
 ipykernel = "*"
