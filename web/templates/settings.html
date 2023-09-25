@@ -14,13 +14,13 @@
             <h2>Frequency Range Settings</h2>
             {{ form.frequency_range_start.label }}
             {{ form.frequency_range_start(size=10) }}
-            <p></p>
+            <br>
             {{ form.frequency_range_end.label }}
             {{ form.frequency_range_end(size=10) }}
-            <p></p>
+            <br>
             {{ form.num_points.label }}
             {{ form.num_points(size=10) }}
-            <p></p>
+            <br>
         </div>
 
         <div>
@@ -28,78 +28,71 @@
             <h2>Noise Floor Settings</h2>
             {{ form.noise_floor_base_amplitude.label }}
             {{ form.noise_floor_base_amplitude(size=10) }}
-            <p></p>
+            <br>
             {{ form.noise_floor_high_energy_amplitude.label }}
             {{ form.noise_floor_high_energy_amplitude(size=10) }}
-            <p></p>
+            <br>
             {{ form.noise_floor_high_energy_frequency.label }}
             {{ form.noise_floor_high_energy_frequency(size=10) }}
-            <p></p>
+            <br>
             {{ form.noise_floor_low_energy_amplitude.label }}
             {{ form.noise_floor_low_energy_amplitude(size=10) }}
-            <p></p>
+            <br>
             {{ form.noise_floor_low_energy_frequency.label }}
             {{ form.noise_floor_low_energy_frequency(size=10) }}
-            <p></p>
+            <br>
         </div>
 
         <div>
             <!-- Signal Spike Settings -->
             <h2>Signal Spike Settings</h2>
-            <!-- Render fields for multiple signal spikes -->
-            {% for spike in form.signal_spike_params %}
-            <div class="spike">
-                {{ spike.signal_spike_amplitude.label }}
-                {{ spike.signal_spike_amplitude }}
-                <br>
-                {{ spike.signal_spike_mu.label }}
-                {{ spike.signal_spike_mu }}
-                <br>
-                {{ spike.signal_spike_sigma.label }}
-                {{ spike.signal_spike_sigma }}
-                <br>
-                <button type="button" class="remove-signal-spike">Remove Signal Spike</button>
-            </div>
-            {% endfor %}
-
-            <!-- Define a type of button to add a new signal spike -->
-            {{ form.hidden_tag() }}
-            <button type="button" id="add-signal-spike">Add Signal Spike</button>
-
-            <!-- Define a type of Container to group signal spike form fields -->
-            <div id="signal-spikes-container"></div>
-
-            <!-- JavaScript to handle adding and removing signal spikes -->
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    var addSignalSpikeButton = document.getElementById("add-signal-spike");
-                    var container = document.getElementById("signal-spikes-container");
-
-                    // Add a new signal spike
-                    addSignalSpikeButton.addEventListener("click", function() {
-                        var signalSpikeCount = document.querySelectorAll(".spike").length;
-                        var newSignalSpike = document.createElement("div");
-                        newSpike.className = "spike";
-                        newSpike.innerHTML = `
-                            {{ form.signal_spike_params[0].signal_spike_amplitude.label }}
-                            {{ form.signal_spike_params[0].signal_spike_amplitude }}
-                            {{ form.signal_spike_params[0].signal_spike_mu.label }}
-                            {{ form.signal_spike_params[0].signal_spike_mu }}
-                            {{ form.signal_spike_params[0].signal_spike_sigma.label }}
-                            {{ form.signal_spike_params[0].signal_spike_sigma }}
-                            <button type="button" class="remove-signal-spike">Remove Spike</button>
-                        `;
-                        container.appendChild(newSpike);
-                    });
-
-                    // Remove a signal spike
-                    container.addEventListener("click", function(event) {
-                        if (event.target && event.target.className == "remove-signal-spike") {
-                            event.target.parentElement.remove();
-                        }
-                    });
-                });
-            </script>
+            <h3>Signal: Alpha</h3>
+            {{ form.signal_spike_alpha_amplitude.label }}
+            {{ form.signal_spike_alpha_amplitude(size=10) }}
+            {{ form.signal_spike_alpha_mu.label }}
+            {{ form.signal_spike_alpha_mu(size=10) }}
+            {{ form.signal_spike_alpha_sigma.label }}
+            {{ form.signal_spike_alpha_sigma(size=10) }}
+            <br>
+            <h3>Signal: Beta</h3>
+            {{ form.signal_spike_beta_amplitude.label }}
+            {{ form.signal_spike_beta_amplitude(size=10) }}
+            {{ form.signal_spike_beta_mu.label }}
+            {{ form.signal_spike_beta_mu(size=10) }}
+            {{ form.signal_spike_beta_sigma.label }}
+            {{ form.signal_spike_beta_sigma(size=10) }}
+            <br>
+            <h3>Signal: Charlie</h3>
+            {{ form.signal_spike_charlie_amplitude.label }}
+            {{ form.signal_spike_charlie_amplitude(size=10) }}
+            {{ form.signal_spike_charlie_mu.label }}
+            {{ form.signal_spike_charlie_mu(size=10) }}
+            {{ form.signal_spike_charlie_sigma.label }}
+            {{ form.signal_spike_charlie_sigma(size=10) }}
+            <br>
+            <h3>Signal: Delta</h3>
+            {{ form.signal_spike_delta_amplitude.label }}
+            {{ form.signal_spike_delta_amplitude(size=10) }}
+            {{ form.signal_spike_delta_mu.label }}
+            {{ form.signal_spike_delta_mu(size=10) }}
+            {{ form.signal_spike_delta_sigma.label }}
+            {{ form.signal_spike_delta_sigma(size=10) }}
+            <br>
+            <h3>Signal: Echo</h3>
+            {{ form.signal_spike_echo_amplitude.label }}
+            {{ form.signal_spike_echo_amplitude(size=10) }}
+            {{ form.signal_spike_echo_mu.label }}
+            {{ form.signal_spike_echo_mu(size=10) }}
+            {{ form.signal_spike_echo_sigma.label }}
+            {{ form.signal_spike_echo_sigma(size=10) }}
+            <br>
+            <h3>Signal: Fox</h3>
+            {{ form.signal_spike_fox_amplitude.label }}
+            {{ form.signal_spike_fox_amplitude(size=10) }}
+            {{ form.signal_spike_fox_mu.label }}
+            {{ form.signal_spike_fox_mu(size=10) }}
+            {{ form.signal_spike_fox_sigma.label }}
+            {{ form.signal_spike_fox_sigma(size=10) }}
 
         </div>
 

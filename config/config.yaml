@@ -10,5 +10,26 @@ noise_floor_params:
   low_energy_frequency: 0.01
 signal_spike_params:
 - amplitude: 40.0
-  mu: 350.0
+  label: Signal Alpha
+  mu: 600.0
   sigma: 10.0
+- amplitude: 60.0
+  label: Signal Beta
+  mu: 400.0
+  sigma: 10.0
+- amplitude: 0.0
+  label: Signal Charlie
+  mu: 0.0
+  sigma: 0.0
+- amplitude: 0.0
+  label: Signal Delta
+  mu: 0.0
+  sigma: 0.0
+- amplitude: 0.0
+  label: Signal Echo
+  mu: 0.0
+  sigma: 0.0
+- amplitude: 0.0
+  label: Signal Fox
+  mu: 0.0
+  sigma: 0.0

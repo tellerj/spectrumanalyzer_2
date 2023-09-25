@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, request, redirect, url_for
 import yaml
 
 from web.forms import SettingsForm  # <--'SettingsForm' is the custom form to adjust signal parameters
@@ -26,57 +26,113 @@ def settings():
     # Instantiate the form from the template
     form = SettingsForm()
 
-    if 'add_signal_spike' in request.form
+    # Load the current configuration to populate the form
+    with open('config/config.yaml', 'r') as f:
+        current_config = yaml.load(f, Loader = yaml.FullLoader)
 
-    # Run when the form is submitted, and passes the built-in validation check
-    if form.validate_on_submit():
-        # Update config with form data
-        config = {
-            'frequency_range' : {
-                'start' : form.frequency_range_start.data,
-                'end' : form.frequency_range_end.data,
-                'num_points' : form.num_points.data
-            },
-            'noise_floor_params' : {
-                'base_amplitude': form.noise_floor_base_amplitude.data,
-                'high_energy_amplitude': form.noise_floor_high_energy_amplitude.data,
-                'high_energy_frequency': form.noise_floor_high_energy_frequency.data,
-                'low_energy_amplitude': form.noise_floor_low_energy_amplitude.data,
-                'low_energy_frequency': form.noise_floor_low_energy_frequency.data
-            },
-            'signal_spike_params' : [
-                {
-                    'amplitude' : form.signal_spike_amplitude.data,
-                    'mu' : form.signal_spike_mu.data,
-                    'sigma' : form.signal_spike_sigma.data
-                }
-            ]
-        }
+
+    if request.method == 'POST':
+        if 'add_signal_spike' in request.form:
+            # Handle adding a new signal spike
+            form.signal_spike_params.append_entry()
+        elif form.validate_on_submit:
+            # Handle form submission to update the configuration
+            config = {
+                'frequency_range' : {
+                    'start' : form.frequency_range_start.data,
+                    'end' : form.frequency_range_end.data,
+                    'num_points' : form.num_points.data
+                },
+                'noise_floor_params' : {
+                    'base_amplitude': form.noise_floor_base_amplitude.data,
+                    'high_energy_amplitude': form.noise_floor_high_energy_amplitude.data,
+                    'high_energy_frequency': form.noise_floor_high_energy_frequency.data,
+                    'low_energy_amplitude': form.noise_floor_low_energy_amplitude.data,
+                    'low_energy_frequency': form.noise_floor_low_energy_frequency.data
+                },
+                'signal_spike_params' : [
+                    {
+                        'amplitude' : form.signal_spike_alpha_amplitude.data,
+                        'mu' : form.signal_spike_alpha_mu.data,
+                        'sigma': form.signal_spike_alpha_sigma.data,
+                        'label' : "Signal Alpha"
+                    },
+                    {
+                        'amplitude' : form.signal_spike_beta_amplitude.data,
+                        'mu' : form.signal_spike_beta_mu.data,
+                        'sigma': form.signal_spike_beta_sigma.data,
+                        'label' : "Signal Beta"
+                    },
+                    {
+                        'amplitude' : form.signal_spike_charlie_amplitude.data,
+                        'mu' : form.signal_spike_charlie_mu.data,
+                        'sigma': form.signal_spike_charlie_sigma.data,
+                        'label' : "Signal Charlie"
+                    },
+                    {
+                        'amplitude' : form.signal_spike_delta_amplitude.data,
+                        'mu' : form.signal_spike_delta_mu.data,
+                        'sigma': form.signal_spike_delta_sigma.data,
+                        'label' : "Signal Delta"
+                    },
+                    {
+                        'amplitude' : form.signal_spike_echo_amplitude.data,
+                        'mu' : form.signal_spike_echo_mu.data,
+                        'sigma': form.signal_spike_echo_sigma.data,
+                        'label' : "Signal Echo"
+                    },
+                    {
+                        'amplitude' : form.signal_spike_fox_amplitude.data,
+                        'mu' : form.signal_spike_fox_mu.data,
+                        'sigma': form.signal_spike_fox_sigma.data,
+                        'label' : "Signal Fox"
+                    }
+                ]
+            }
 
         # Save updated configuration to the config file
         with open('config/config.yaml', 'w') as f:
             yaml.dump(config, f)
 
-        return app.redirect(app.url_for('index'))
-    
-    # Open the current config to populate the form
-    with open('config/config.yaml', 'r') as f:
-        current_config = yaml.load(f, Loader=yaml.FullLoader)
+        return redirect(url_for('index'))
 
-    # # Populate the Frequency Range fields with current config data
-    # form.frequency_range_start.default = current_config['frequency_range']['start']
-    # form.frequency_range_end.default = current_config['frequency_range']['end']
-    # form.num_points.default = current_config['frequency_range']['num_points']
-    # # Populate the Noise Floor fields with current config data
-    # form.noise_floor_base_amplitude.default = current_config['noise_floor_params']['base_amplitude']
-    # form.noise_floor_high_energy_amplitude.default = current_config['noise_floor_params']['high_energy_amplitude']
-    # form.noise_floor_high_energy_frequency.default = current_config['noise_floor_params']['high_energy_frequency']
-    # form.noise_floor_low_energy_amplitude.default = current_config['noise_floor_params']['low_energy_amplitude']
-    # form.noise_floor_low_energy_frequency = current_config['noise_floor_params']['low_energy_frequency']
-    # # Populate the Signal Spike fields with current config data
-    # form.signal_spike_amplitude = int(current_config['signal_spike_params']['amplitude'])
-    # form.signal_spike_mu = int(current_config['signal_spike_params']['mu'])
-    # form.signal_spike_sigma = int(current_config['signal_spike_params']['sigma'])
+    # Populate the Frequency Range fields with current config data
+    form.frequency_range_start.default = current_config['frequency_range']['start']
+    form.frequency_range_end.default = current_config['frequency_range']['end']
+    form.num_points.default = current_config['frequency_range']['num_points']
+    
+    # Populate the Noise Floor fields with current config data
+    form.noise_floor_base_amplitude.default = current_config['noise_floor_params']['base_amplitude']
+    form.noise_floor_high_energy_amplitude.default = current_config['noise_floor_params']['high_energy_amplitude']
+    form.noise_floor_high_energy_frequency.default = current_config['noise_floor_params']['high_energy_frequency']
+    form.noise_floor_low_energy_amplitude.default = current_config['noise_floor_params']['low_energy_amplitude']
+    form.noise_floor_low_energy_frequency.default = current_config['noise_floor_params']['low_energy_frequency']
+    
+    # Populate the Signal Spike fields with current config data
+    form.signal_spike_alpha_amplitude.default = current_config['signal_spike_params'][0]['amplitude']
+    form.signal_spike_alpha_mu.default = current_config['signal_spike_params'][0]['mu']
+    form.signal_spike_alpha_sigma.default = current_config['signal_spike_params'][0]['sigma']
+    
+    form.signal_spike_beta_amplitude.default = current_config['signal_spike_params'][1]['amplitude']
+    form.signal_spike_beta_mu.default = current_config['signal_spike_params'][1]['mu']
+    form.signal_spike_beta_sigma.default = current_config['signal_spike_params'][1]['sigma']
+    
+    form.signal_spike_charlie_amplitude.default = current_config['signal_spike_params'][2]['amplitude']
+    form.signal_spike_charlie_mu.default = current_config['signal_spike_params'][2]['mu']
+    form.signal_spike_charlie_sigma.default = current_config['signal_spike_params'][2]['sigma']
+    
+    form.signal_spike_delta_amplitude.default = current_config['signal_spike_params'][3]['amplitude']
+    form.signal_spike_delta_mu.default = current_config['signal_spike_params'][3]['mu']
+    form.signal_spike_delta_sigma.default = current_config['signal_spike_params'][3]['sigma']
+    
+    form.signal_spike_echo_amplitude.default = current_config['signal_spike_params'][4]['amplitude']
+    form.signal_spike_echo_mu.default = current_config['signal_spike_params'][4]['mu']
+    form.signal_spike_echo_sigma.default = current_config['signal_spike_params'][4]['sigma']
+    
+    form.signal_spike_fox_amplitude.default = current_config['signal_spike_params'][5]['amplitude']
+    form.signal_spike_fox_mu.default = current_config['signal_spike_params'][5]['mu']
+    form.signal_spike_fox_sigma.default = current_config['signal_spike_params'][5]['sigma']
+
 
     # Process the form with current config data
     form.process(data=current_config)
