@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import yaml
+import os
 
 
 class spectrum:
@@ -111,8 +112,15 @@ class spectrum:
         plt.title('Spectrum Analyzer')
         plt.grid(True)
 
+        # Set image path
+        image_path = 'web/static/spectrum_plot.png'
+
+        # If there's an old image there, delete it first
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
         # Save the plot as an image in the static folder
-        plt.savefig('web/static/spectrum_plot.png')
+        plt.savefig(image_path)
 
         # Close the plot to save resources
         plt.close()
