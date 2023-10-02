@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings - Spectrum Analyzer</title>
+</head>
+<body>
+
+    <h1>Settings - Spectrum Analyzer</h1>
+    <a href="{{ url_for('index') }}">Spectrum Analyzer</a>
+
+    <form method="POST" action="{{ url_for('settings') }}">
+
+        <div>
+            <!-- Frequency Range Settings -->
+            <h2>Frequency Range Settings</h2>
+            {{ form.frequency_range_start.label }}
+            {{ form.frequency_range_start(size=10) }}
+            <br>
+            {{ form.frequency_range_end.label }}
+            {{ form.frequency_range_end(size=10) }}
+            <br>
+            {{ form.frequency_range_num_points.label }}
+            {{ form.frequency_range_num_points(size=10) }}
+            <br>
+        </div>
+
+        <div>
+            <!-- Noise Floor Settings -->
+            <h2>Noise Floor Settings</h2>
+            {{ form.noise_floor_base_amplitude.label }}
+            {{ form.noise_floor_base_amplitude(size=10) }}
+            <br>
+            {{ form.noise_floor_high_energy_amplitude.label }}
+            {{ form.noise_floor_high_energy_amplitude(size=10) }}
+            <br>
+            {{ form.noise_floor_high_energy_frequency.label }}
+            {{ form.noise_floor_high_energy_frequency(size=10) }}
+            <br>
+            {{ form.noise_floor_low_energy_amplitude.label }}
+            {{ form.noise_floor_low_energy_amplitude(size=10) }}
+            <br>
+            {{ form.noise_floor_low_energy_frequency.label }}
+            {{ form.noise_floor_low_energy_frequency(size=10) }}
+            <br>
+        </div>
+
+        <div>
+            <!-- Signal Spike Settings -->
+            <h2>Signal Spike Settings</h2>
+            <h3>Signal: Alpha</h3>
+            {{ form.signal_spike_0_amplitude.label }}
+            {{ form.signal_spike_0_amplitude(size=10) }}
+            {{ form.signal_spike_0_mu.label }}
+            {{ form.signal_spike_0_mu(size=10) }}
+            {{ form.signal_spike_0_sigma.label }}
+            {{ form.signal_spike_0_sigma(size=10) }}
+            <br>
+            <h3>Signal: Beta</h3>
+            {{ form.signal_spike_1_amplitude.label }}
+            {{ form.signal_spike_1_amplitude(size=10) }}
+            {{ form.signal_spike_1_mu.label }}
+            {{ form.signal_spike_1_mu(size=10) }}
+            {{ form.signal_spike_1_sigma.label }}
+            {{ form.signal_spike_1_sigma(size=10) }}
+            <br>
+            <h3>Signal: Charlie</h3>
+            {{ form.signal_spike_2_amplitude.label }}
+            {{ form.signal_spike_2_amplitude(size=10) }}
+            {{ form.signal_spike_2_mu.label }}
+            {{ form.signal_spike_2_mu(size=10) }}
+            {{ form.signal_spike_2_sigma.label }}
+            {{ form.signal_spike_2_sigma(size=10) }}
+            <br>
+            <h3>Signal: Delta</h3>
+            {{ form.signal_spike_3_amplitude.label }}
+            {{ form.signal_spike_3_amplitude(size=10) }}
+            {{ form.signal_spike_3_mu.label }}
+            {{ form.signal_spike_3_mu(size=10) }}
+            {{ form.signal_spike_3_sigma.label }}
+            {{ form.signal_spike_3_sigma(size=10) }}
+            <br>
+            <h3>Signal: Echo</h3>
+            {{ form.signal_spike_4_amplitude.label }}
+            {{ form.signal_spike_4_amplitude(size=10) }}
+            {{ form.signal_spike_4_mu.label }}
+            {{ form.signal_spike_4_mu(size=10) }}
+            {{ form.signal_spike_4_sigma.label }}
+            {{ form.signal_spike_4_sigma(size=10) }}
+            <br>
+            <h3>Signal: Fox</h3>
+            {{ form.signal_spike_5_amplitude.label }}
+            {{ form.signal_spike_5_amplitude(size=10) }}
+            {{ form.signal_spike_5_mu.label }}
+            {{ form.signal_spike_5_mu(size=10) }}
+            {{ form.signal_spike_5_sigma.label }}
+            {{ form.signal_spike_5_sigma(size=10) }}
+            <br>
+
+        </div>
+
+        <div>
+            <br>
+            <input type="submit" value="Update Spectrum Analyzer">
+        </div>
+    </form>
+
+    <!-- Add a form to save the running config -->
+    <form method="POST" action="{{ url_for('save_config') }}">
+        <button type="submit" class="btn btn-primary">Save Config</button>
+    </form>
+
+</body>
+</html>

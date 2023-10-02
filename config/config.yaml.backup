@@ -32,14 +32,27 @@ signal_spike_params:
   #     mu = Mean, or central position of the peak
   #     sigma = standard deviation or widith of the peak
 
-  - amplitude: 50  # Amplitude of the first signal spike
-    mu: 200  # Center frequency of the first spike in Hz
-    sigma: 10  # Width of the first spike
-
-  - amplitude: 50  # Amplitude of the second signal spike
-    mu: 600  # Center frequency of the second spike in Hz
-    sigma: 10  # Width of the second spike
-
-  - amplitude: 50  # Amplitude of the second signal spike
-    mu: 650  # Center frequency of the second spike in Hz
-    sigma: 10  # Width of the second spike
+  - amplitude: 0.0
+    label: "Signal Alpha"
+    mu: 0.0
+    sigma: 0.0
+  - amplitude: 0.0
+    label: "Signal Beta"
+    mu: 0.0
+    sigma: 0.0
+  - amplitude: 0.0
+    label: "Signal Charlie"
+    mu: 0.0
+    sigma: 0.0
+  - amplitude: 0.0
+    label: "Signal Delta"
+    mu: 0.0
+    sigma: 0.0
+  - amplitude: 0.0
+    label: "Signal Echo"
+    mu: 0.0
+    sigma: 0.0
+  - amplitude: 0.0
+    label: "Signal Fox"
+    mu: 0.0
+    sigma: 0.0
