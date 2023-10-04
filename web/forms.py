@@ -4,16 +4,16 @@ from wtforms.validators import InputRequired
 
 class SettingsForm(FlaskForm):
     # Frequency Range Params
-    frequency_range_start = IntegerField('Frequency Range Start', validators=[InputRequired()])
-    frequency_range_end = IntegerField('Frequency Range End', validators=[InputRequired()])
-    frequency_range_num_points = IntegerField('Number of Points to Plot', validators=[InputRequired()])
+    frequency_range_start = IntegerField('Frequency Range Start', validators=[InputRequired()], default=2500)
+    frequency_range_end = IntegerField('Frequency Range End', validators=[InputRequired()], default=7500)
+    frequency_range_num_points = IntegerField('Number of Points to Plot', validators=[InputRequired()], default=1000)
     
     # Noise Floor Params 
-    noise_floor_base_amplitude = FloatField('Noise Floor Base Amplitude', validators=[InputRequired()])
-    noise_floor_high_energy_amplitude = FloatField('Noise Floor High Energy Amplitude', validators=[InputRequired()])
-    noise_floor_high_energy_frequency = FloatField('Noise Floor High Energy Frequency', validators=[InputRequired()])
-    noise_floor_low_energy_amplitude = FloatField('Noise Floor Low Energy Amplitude', validators=[InputRequired()])
-    noise_floor_low_energy_frequency = FloatField('Noise Floor Low Energy Frequency', validators=[InputRequired()])
+    noise_floor_base_amplitude = FloatField('Noise Floor Base Amplitude', validators=[InputRequired()], default=10.0)
+    noise_floor_high_energy_amplitude = FloatField('Noise Floor High Energy Amplitude', validators=[InputRequired()], default=2.0)
+    noise_floor_high_energy_frequency = FloatField('Noise Floor High Energy Frequency', validators=[InputRequired()], default=1000.0)
+    noise_floor_low_energy_amplitude = FloatField('Noise Floor Low Energy Amplitude', validators=[InputRequired()], default=1.0)
+    noise_floor_low_energy_frequency = FloatField('Noise Floor Low Energy Frequency', validators=[InputRequired()], default=0.01)
 
     # Signal Spike Params
     signal_spike_0_amplitude = FloatField('Signal Spike Alpha - Amplitude',validators=[InputRequired()], default=0.0)

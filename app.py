@@ -6,7 +6,7 @@ import argparse
 
 # Custom modules/imports for this project
 from web.forms import SettingsForm  # <--'SettingsForm' is the custom form to adjust signal parameters
-from spectrum import spectrum
+from spectrum import Spectrum
 
 # Initialize the Flask App
 app = Flask(__name__, template_folder='web/templates')
@@ -57,9 +57,9 @@ running_config = load_config(args.config)
 @app.route('/')
 def index():
     # Create instance of spectrum graph and plot it
-    spectrum_analyzer = spectrum(running_config)
-    spectrum_analyzer.plot_spectrum_graph()
-    return render_template('index.html')
+    spectrum_analyzer = Spectrum(running_config)
+    animation_html = spectrum_analyzer.animate_spectrum()
+    return render_template('index.html', animation_html=animation_html)
 
 # Settings modification page. Shows a form which is used to adjust the various signal parameters
 @app.route('/settings', methods=['GET','POST'])
@@ -70,7 +70,7 @@ def settings():
     # Instantiate the form from the template
     form = SettingsForm()
 
-    if request.method == 'POST' and form.validate_on_submit:
+    if request.method == 'POST' and form.validate_on_submit():
         # Update the running config with form submission values
         update_running_config(form)
         flash('Settings updated successfully!', 'success')

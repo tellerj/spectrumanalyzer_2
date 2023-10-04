@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-matplotlib = "*"
 numpy = "*"
 pipenv = "*"
 pyyaml = "*"
@@ -12,6 +11,7 @@ flask-wtf = "*"
 watchdog = "*"
 argparse = "*"
 datetime = "*"
+matplotlib = {extras = ["animation"], version = "*"}
 
 [dev-packages]
 ipykernel = "*"

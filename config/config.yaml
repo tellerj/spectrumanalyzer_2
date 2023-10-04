@@ -1,6 +1,6 @@
 # Frequency Range Parameters:
-frequency_range_start: 0
-frequency_range_end: 1000  # Define your frequency range in Hz
+frequency_range_start: 2500
+frequency_range_end: 7000  # Define your frequency range in Hz
 frequency_range_num_points: 1000  # Number of data points
 
 # Noise Floor Parameters:
@@ -15,8 +15,8 @@ frequency_range_num_points: 1000  # Number of data points
   #
   #   f(x)_noise-floor = base_amplitude + f(x)_high-energy + f(x)_low-energy
 
-noise_floor_base_amplitude: 30.0 # Overall base amplitude of the noise floor (where it will exist on the y-axis)
-noise_floor_high_energy_amplitude: 3.0  # Amplitude of the high_energy part of the noise floor
+noise_floor_base_amplitude: 10.0 # Overall base amplitude of the noise floor (where it will exist on the y-axis)
+noise_floor_high_energy_amplitude: 2.0  # Amplitude of the high_energy part of the noise floor
 noise_floor_high_energy_frequency: 1000.0  # Frequency of the high_energy part of the noise floor in Hz
 noise_floor_low_energy_amplitude: 1.0 # Amplitude of low_energy (undulating) part of the noise floor
 noise_floor_low_energy_frequency: 0.01 # Frequency of the low_energy (undulating) part of the noise floor

@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 import yaml
 import os
 
 
-class spectrum:
+class Spectrum:
     """
     A class representing a spectrum graph.
 
@@ -21,6 +22,7 @@ class spectrum:
     def __init__(self, config):
         self.config = config
         self.initialize_parameters()
+        self.fig, self.ax = plt.subplots()
 
     def load_config(self, config_file):
         with open(config_file, 'r') as f:
@@ -28,7 +30,12 @@ class spectrum:
         return config
     
     def initialize_parameters(self):
-        #Extract Frequency Range parameters from config
+        # Need to add exception handling for missing parameters
+
+        # Initialize a time variable for animation
+        self.time = 0.0
+        
+        # Extract Frequency Range parameters from config
         self.frequency_range = np.linspace(
             self.config['frequency_range_start'],
             self.config['frequency_range_end'],
@@ -71,6 +78,8 @@ class spectrum:
         '''
         Generate a graph of the spectrum, using noise floor and variable number of signal spikes
         '''
+
+        self.time += .1 # Increment time for animation
 
         noise_floor = self.generate_noise_floor()
         signal_spikes = self.generate_signal_spikes()
@@ -117,7 +126,34 @@ class spectrum:
 
         return signal_spikes
     
+    def get_spectrum_data(self):
+        return self.generate_spectrum_graph()
     
+    def animate_spectrum(self):
+
+        fig, ax = plt.subplots()
+
+        def init():
+            ax.clear()
+            return ax
+        
+        def update(frame):
+            ax.clear()
+            ax.plot(self.frequency_range, self.get_spectrum_data())
+            ax.set_xlabel('Frequency')
+            ax.set_ylabel('Amplitude')
+            ax.set_title('Spectrum Analyzer')
+            ax.grid(True)
+            return ax
+        
+        ani = FuncAnimation(fig, update, init_func=init, blit=True, interval=100)
+        return ani.to_jshtml() #convert animmation to HTML5 video for display
+    
+    def save_spectrum_animation(self, filename):
+        ani = self.animate_spectrum()
+        ani.save(filename, writer='ffmpeg')
+        return ani
+
     def plot_spectrum_graph(self):
         '''
         Create a matplotlib plot of the spectrum graph
