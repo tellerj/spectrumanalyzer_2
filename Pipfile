@@ -11,7 +11,7 @@ flask-wtf = "*"
 watchdog = "*"
 argparse = "*"
 datetime = "*"
-matplotlib = {extras = ["animation"], version = "*"}
+matplotlib = {extras = ["animation"] }
 
 [dev-packages]
 ipykernel = "*"

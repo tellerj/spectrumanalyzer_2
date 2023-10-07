@@ -1,180 +1,129 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+import matplotlib.animation as animation 
+import matplotlib.pyplot as plt 
+import numpy as np 
 import yaml
-import os
+from IPython.display import HTML as html
 
+plt.rcParams['animation.ffmpeg_path'] = "C:\\Users\\telle\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe"
 
 class Spectrum:
-    """
-    A class representing a spectrum graph.
-
-    Attributes
-    --------------
-    ...
-
-
-    Methods
-    --------------
-    ...
-    """
-
-    def __init__(self, config):
+    def __init__(self,config = None):
         self.config = config
-        self.initialize_parameters()
-        self.fig, self.ax = plt.subplots()
+        self.frequency_range_start = self.config['frequency_range_start']
+        self.frequency_range_end = self.config['frequency_range_end']
+        self.frequency_range = range(self.frequency_range_start, self.frequency_range_end)
+        self.num_spikes = self.count_spikes()
+        self.pointer = 0
+        self.frames = 2 * (len(self.frequency_range))
+        self.dt = .1
 
-    def load_config(self, config_file):
-        with open(config_file, 'r') as f:
-            config = yaml.load(f, Loader=yaml.FullLoader)
-        return config
+        self.fig, self.axis = plt.subplots()
+        self.axis.set_xlim(self.frequency_range_start, self.frequency_range_end)
+        self.axis.set_ylim(0, 100)
+        self.xdata, self.ydata = [],[]
+        for i in self.frequency_range:
+            self.xdata.append(None)
+            self.ydata.append(None)
+        self.line, = self.axis.plot([],[], lw = 2)
+
+    def count_spikes(self):
+        '''Count the number of signal spikes in the current config'''
+        count = 0
+        for key in self.config.keys():
+            if key.startswith('signal_spike_') and key.endswith('_amplitude'): # Obviously...doesn't check that all necessary parameters are present
+                count += 1
+        return count
     
-    def initialize_parameters(self):
-        # Need to add exception handling for missing parameters
+    def save_animation(self, filename):
+        anim = self.gen_animation()
+        anim.save(filename, writer='ffmpeg', fps=30)
 
-        # Initialize a time variable for animation
-        self.time = 0.0
-        
-        # Extract Frequency Range parameters from config
-        self.frequency_range = np.linspace(
-            self.config['frequency_range_start'],
-            self.config['frequency_range_end'],
-            self.config['frequency_range_num_points']
-        )
+    def init(self): 
+        for i in self.frequency_range:
+            self.animate(i)
+        return self.line, 
 
-        # Extract Noise Floor parameters from config
-        self.noise_floor_base_amplitude = self.config['noise_floor_base_amplitude']
-        self.noise_floor_high_energy_amplitude = self.config['noise_floor_high_energy_amplitude']
-        self.noise_floor_high_energy_frequency = self.config['noise_floor_high_energy_frequency']
-        self.noise_floor_low_energy_amplitude = self.config['noise_floor_low_energy_amplitude']
-        self.noise_floor_low_energy_frequency = self.config['noise_floor_low_energy_frequency']
+    # animation function 
+    def animate(self, i): 
 
-        # Extract Signal Spike parameters from config
-        self.signal_spike_0_amplitude = self.config['signal_spike_0_amplitude']
-        self.signal_spike_0_mu = self.config['signal_spike_0_mu']
-        self.signal_spike_0_sigma = self.config['signal_spike_0_sigma']
-        
-        self.signal_spike_1_amplitude = self.config['signal_spike_1_amplitude']
-        self.signal_spike_1_mu = self.config['signal_spike_1_mu']
-        self.signal_spike_1_sigma = self.config['signal_spike_1_sigma']
-        
-        self.signal_spike_2_amplitude = self.config['signal_spike_2_amplitude']
-        self.signal_spike_2_mu = self.config['signal_spike_2_mu']
-        self.signal_spike_2_sigma = self.config['signal_spike_2_sigma']
-        
-        self.signal_spike_3_amplitude = self.config['signal_spike_3_amplitude']
-        self.signal_spike_3_mu = self.config['signal_spike_3_mu']
-        self.signal_spike_3_sigma = self.config['signal_spike_3_sigma']
-        
-        self.signal_spike_4_amplitude = self.config['signal_spike_4_amplitude']
-        self.signal_spike_4_mu = self.config['signal_spike_4_mu']
-        self.signal_spike_4_sigma = self.config['signal_spike_4_sigma']
-        
-        self.signal_spike_5_amplitude = self.config['signal_spike_5_amplitude']
-        self.signal_spike_5_mu = self.config['signal_spike_5_mu']
-        self.signal_spike_5_sigma = self.config['signal_spike_5_sigma']
+        pt = self.pointer
 
-    def generate_spectrum_graph(self):
-        '''
-        Generate a graph of the spectrum, using noise floor and variable number of signal spikes
-        '''
-
-        self.time += .1 # Increment time for animation
-
-        noise_floor = self.generate_noise_floor()
-        signal_spikes = self.generate_signal_spikes()
-
-        # sum the noise floor and signal spikes to get the final expression of the curve
-        spectrum_graph = noise_floor + signal_spikes
-
-        return spectrum_graph
+        # break early if we're close to the end of the line
+        # this is to avoid 'index out of range' when clearing the next 5 points, below
+        if pt >= len(self.frequency_range) - 3:
+            self.pointer = 0
+            pt = 0
     
-    
-    def generate_noise_floor(self):
-        '''
-        Generate noise floor data (e.g. high-frequency sine wave). It's actually two waves. 
-        noise_floor_high_energy is a high frequency wave (to look like static noise). 
-        noise_floor_low_energy is a very low frequency wave (to make the whole thing look wavy).
-        '''
+        # t is a parameter which varies 
+        # with the frame number 'i', by amount 'self.dt'
+        x = self.frequency_range[pt]
 
-        # Create expression for energetic portion of noise floor
-        noise_floor_high_energy = self.noise_floor_high_energy_amplitude * np.sin(self.noise_floor_high_energy_frequency * self.frequency_range)
-
-        # Create expression for base portion of noise floor
-        noise_floor_low_energy = self.noise_floor_low_energy_amplitude * np.sin(self.noise_floor_low_energy_frequency * self.frequency_range)
-
-        # Add together each part including the base amplitude to make a squiggly wave that undulates up and down a bit
-        noise_floor = self.noise_floor_base_amplitude + noise_floor_low_energy + noise_floor_high_energy 
-
-        return noise_floor
-    
-    
-    def generate_signal_spikes(self):
-        '''
-        Generate signal spikes (e.g. Gaussian curves) as many times as there are configured parameters
-        '''
-        # Make an array of zeroes the same length as the frequency range of the graph
-        signal_spikes = np.zeros_like(self.frequency_range)
+        # Compute messy looking noise floor, using some random multipliers
+        rint = np.random.randint(-2,2)
+        rfloat = np.random.rand()
+        n_base = self.config['noise_floor_base_amplitude']
+        n_amp = self.config['noise_floor_high_energy_amplitude']
+        n_freq = self.config['noise_floor_high_energy_frequency']
+        
+        #noise_floor = n_base + n_amp * np.sin(n_freq * x)
+        noise_floor_value = rint + n_base + rfloat * n_amp * np.sin(rfloat * n_freq * x)
 
         # Iterate through each set of spike parameters and compute Gaussian Curve for that spike, add to signal_spikes array
-        for i in range(5):
-            amp =  self.config[f'signal_spike_{i}_amplitude']   # Height of the spike
-            mu = self.config[f'signal_spike_{i}_mu']            # Center-frequency of the spike
-            sigma = self.config[f'signal_spike_{i}_sigma']      # Width of the spike
+        signal_spike_value = 0
+        for i in range(self.num_spikes):
+            s_amp =  self.config[f'signal_spike_{i}_amplitude']   # Height of the spike
+            s_mu = self.config[f'signal_spike_{i}_mu']            # Center-frequency of the spike
+            s_sigma = self.config[f'signal_spike_{i}_sigma']      # Width of the spike
 
-            signal_spikes += amp * np.exp( -0.5 * ( (self.frequency_range - mu) ** 2) / (sigma ** 2) )
+            try:
+                signal_spike_value += s_amp * np.exp( -0.5 * ( (x - s_mu) ** 2) / (s_sigma ** 2) )
+            except: 
+                continue
 
-        return signal_spikes
-    
-    def get_spectrum_data(self):
-        return self.generate_spectrum_graph()
-    
-    def animate_spectrum(self):
+        y = noise_floor_value + signal_spike_value
 
-        fig, ax = plt.subplots()
+        # change existing x and y values to newly computed ones
+        self.xdata[pt] = x
+        self.ydata[pt] = y
 
-        def init():
-            ax.clear()
-            return ax
+        # clear the next few points to make it look like a cursor
+        self.ydata[pt+1] = None
+        self.ydata[pt+2] = None
+        self.ydata[pt+3] = None
+
+        #set line data to newly updated set of points
+        self.line.set_data(self.xdata, self.ydata)
+
+        self.pointer +=1
         
-        def update(frame):
-            ax.clear()
-            ax.plot(self.frequency_range, self.get_spectrum_data())
-            ax.set_xlabel('Frequency')
-            ax.set_ylabel('Amplitude')
-            ax.set_title('Spectrum Analyzer')
-            ax.grid(True)
-            return ax
+        return self.line, 
+
+    def gen_animation(self, format=None):
+
+        # calling the animation function	 
+        anim = animation.FuncAnimation(
+            self.fig, 
+            self.animate,  
+            frames = self.frames,
+            init_func=self.init,
+            interval = 20, 
+            blit = True, 
+            repeat = True)
+
+        if format == 'jshtml':
+            return anim.to_jshtml()
+        elif format == 'html5_video':
+            return anim.to_html5_video()
         
-        ani = FuncAnimation(fig, update, init_func=init, blit=True, interval=100)
-        return ani.to_jshtml() #convert animmation to HTML5 video for display
+        return anim
     
-    def save_spectrum_animation(self, filename):
-        ani = self.animate_spectrum()
-        ani.save(filename, writer='ffmpeg')
-        return ani
+    
 
-    def plot_spectrum_graph(self):
-        '''
-        Create a matplotlib plot of the spectrum graph
-        '''
+# with open('config/config.yaml', 'r') as f:
+#     config = yaml.load(f, Loader=yaml.FullLoader)
+# spectrum = Spectrum(config)
+# anim = spectrum.gen_animation() #.save('growingCoil1.mp4', writer = 'ffmpeg', fps = 30)
+# plt.show()
 
-        plt.figure(figsize=(18,8))
-        plt.plot(self.frequency_range, self.generate_spectrum_graph())
-        plt.xlabel('Frequency')
-        plt.ylabel('Amplitude')
-        plt.title('Spectrum Analyzer')
-        plt.grid(True)
-
-        # Set image path
-        image_path = 'web/static/spectrum_plot.png'
-
-        # If there's an old image there, delete it first
-        if os.path.exists(image_path):
-            os.remove(image_path)
-
-        # Save the plot as an image in the static folder
-        plt.savefig(image_path)
-
-        # Close the plot to save resources
-        plt.close()
+# saves the animation in our desktop 
+#anim.save('growingCoil.mp4', writer = 'ffmpeg', fps = 30) 

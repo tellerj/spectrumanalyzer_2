@@ -1,6 +1,6 @@
 # Frequency Range Parameters:
-frequency_range_start: 2500
-frequency_range_end: 7000  # Define your frequency range in Hz
+frequency_range_start: 3800
+frequency_range_end: 4000  # Define your frequency range in Hz
 frequency_range_num_points: 1000  # Number of data points
 
 # Noise Floor Parameters:
@@ -16,8 +16,8 @@ frequency_range_num_points: 1000  # Number of data points
   #   f(x)_noise-floor = base_amplitude + f(x)_high-energy + f(x)_low-energy
 
 noise_floor_base_amplitude: 10.0 # Overall base amplitude of the noise floor (where it will exist on the y-axis)
-noise_floor_high_energy_amplitude: 2.0  # Amplitude of the high_energy part of the noise floor
-noise_floor_high_energy_frequency: 1000.0  # Frequency of the high_energy part of the noise floor in Hz
+noise_floor_high_energy_amplitude: 3.0  # Amplitude of the high_energy part of the noise floor
+noise_floor_high_energy_frequency: .1  # Frequency of the high_energy part of the noise floor in Hz
 noise_floor_low_energy_amplitude: 1.0 # Amplitude of low_energy (undulating) part of the noise floor
 noise_floor_low_energy_frequency: 0.01 # Frequency of the low_energy (undulating) part of the noise floor
 
@@ -32,32 +32,32 @@ noise_floor_low_energy_frequency: 0.01 # Frequency of the low_energy (undulating
   #     mu = Mean, or central position of the peak
   #     sigma = standard deviation or widith of the peak
 
-signal_spike_0_amplitude: 0.0
+signal_spike_0_amplitude: 70.0
 signal_spike_0_label: "Signal Alpha"
-signal_spike_0_mu: 0.0
-signal_spike_0_sigma: 0.0
+signal_spike_0_mu: 3824.0
+signal_spike_0_sigma: 5.0
 
-signal_spike_1_amplitude: 0.0
+signal_spike_1_amplitude: 70.0
 signal_spike_1_label: "Signal Beta"
-signal_spike_1_mu: 0.0
-signal_spike_1_sigma: 0.0
+signal_spike_1_mu: 3830.0
+signal_spike_1_sigma: 5.0
 
-signal_spike_2_amplitude: 0.0
+signal_spike_2_amplitude: 70.0
 signal_spike_2_label: "Signal Charlie"
-signal_spike_2_mu: 0.0
-signal_spike_2_sigma: 0.0
+signal_spike_2_mu: 3880.0
+signal_spike_2_sigma: 5.0
 
-signal_spike_3_amplitude: 0.0
+signal_spike_3_amplitude: 70.0
 signal_spike_3_label: "Signal Delta"
-signal_spike_3_mu: 0.0
-signal_spike_3_sigma: 0.0
+signal_spike_3_mu: 3898.0
+signal_spike_3_sigma: 5.0
 
-signal_spike_4_amplitude: 0.0
+signal_spike_4_amplitude: 70.0
 signal_spike_4_label: "Signal Echo"
-signal_spike_4_mu: 0.0
-signal_spike_4_sigma: 0.0
+signal_spike_4_mu: 3945.0
+signal_spike_4_sigma: 5.0
 
-signal_spike_5_amplitude: 0.0
+signal_spike_5_amplitude: 70.0
 signal_spike_5_label: "Signal Fox"
-signal_spike_5_mu: 0.0
-signal_spike_5_sigma: 0.0
+signal_spike_5_mu: 3960.0
+signal_spike_5_sigma: 5.0

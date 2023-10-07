@@ -49,6 +49,15 @@ def update_running_config(form):
         running_config[f'signal_spike_{i}_mu'] = form[f'signal_spike_{i}_mu'].data
         running_config[f'signal_spike_{i}_sigma'] = form[f'signal_spike_{i}_sigma'].data
 
+    generate_spectrum_animation(running_config)
+
+def generate_spectrum_animation(running_config, export_path="web/static/", export_filename='spectrum_animation.mp4'): 
+    # Create instance of spectrum graph and plot it
+    spectrum = Spectrum(running_config)
+    spectrum.save_animation(export_path + export_filename)
+    spectrum.gen_animation().save('web/static/spec_anni.gif', writer='pillow', fps=30)
+    return spectrum.gen_animation()
+
 # Initialize a global variable to store the running config
 args = parse_args()
 running_config = load_config(args.config)
@@ -56,10 +65,14 @@ running_config = load_config(args.config)
 # Initial root page. Renders the 'index.html' file showing an image of the Spectrum Analyzer
 @app.route('/')
 def index():
-    # Create instance of spectrum graph and plot it
-    spectrum_analyzer = Spectrum(running_config)
-    animation_html = spectrum_analyzer.animate_spectrum()
-    return render_template('index.html', animation_html=animation_html)
+    video_path = 'web/static/'
+    video_filename = 'spectrum_animation.mp4'
+    generate_spectrum_animation(running_config, export_path=video_path, export_filename=video_filename)
+    return render_template(
+        'index.html',
+        video_file = video_filename,
+        gif_filename = 'spec_anni.gif'
+        )
 
 # Settings modification page. Shows a form which is used to adjust the various signal parameters
 @app.route('/settings', methods=['GET','POST'])
