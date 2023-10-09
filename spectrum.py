@@ -70,10 +70,10 @@ class Spectrum:
 
         # Iterate through each set of spike parameters and compute Gaussian Curve for that spike, add to signal_spikes array
         signal_spike_value = 0
-        for i in range(self.num_spikes):
-            s_amp =  self.config[f'signal_spike_{i}_amplitude']   # Height of the spike
-            s_mu = self.config[f'signal_spike_{i}_mu']            # Center-frequency of the spike
-            s_sigma = self.config[f'signal_spike_{i}_sigma']      # Width of the spike
+        for j in range(self.num_spikes):
+            s_amp =  self.config[f'signal_spike_{j}_amplitude']   # Height of the spike
+            s_mu = self.config[f'signal_spike_{j}_mu']            # Center-frequency of the spike
+            s_sigma = self.config[f'signal_spike_{j}_sigma']      # Width of the spike
 
             try:
                 signal_spike_value += s_amp * np.exp( -0.5 * ( (x - s_mu) ** 2) / (s_sigma ** 2) )
