@@ -147,12 +147,14 @@ def settings():
     form.noise_floor_low_energy_frequency.default = running_config['noise_floor_low_energy_frequency']
     
     # # Populate the Signal Spike fields with current config data
-    spike_list = list(range(spectrum.count_spikes()))
-    for i in spike_list:
-        # This is gross, but at least it's compact. I don't want to talk about it.
-        exec(f"form.signal_spike_%d_amplitude.default = running_config['signal_spike_{i}_amplitude']" %i)
-        exec(f"form.signal_spike_%d_mu.default = running_config['signal_spike_{i}_mu']" %i)
-        exec(f"form.signal_spike_%d_sigma.default = running_config['signal_spike_{i}_sigma']" %i)
+    for i in range(count_signal_spikes(running_config)):
+        form[f'signal_spike_{i}_amplitude'].default = running_config[f'signal_spike_{i}_amplitude']
+        form[f'signal_spike_{i}_mu'].default = running_config[f'signal_spike_{i}_mu']
+        form[f'signal_spike_{i}_sigma'].default = running_config[f'signal_spike_{i}_sigma']
+        # # This is gross, but at least it's compact. I don't want to talk about it.
+        # exec(f"form.signal_spike_%d_amplitude.default = running_config['signal_spike_{i}_amplitude']" %i)
+        # exec(f"form.signal_spike_%d_mu.default = running_config['signal_spike_{i}_mu']" %i)
+        # exec(f"form.signal_spike_%d_sigma.default = running_config['signal_spike_{i}_sigma']" %i)
 
     # Process the form with current config data
     form.process(obj=running_config)

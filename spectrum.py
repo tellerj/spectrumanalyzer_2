@@ -9,9 +9,10 @@ plt.rcParams['animation.ffmpeg_path'] = "C:\\Users\\telle\\AppData\\Local\\Micro
 class Spectrum:
     def __init__(self,config = None):
         self.config = config
-        self.frequency_range_start = self.config['frequency_range_start'] - 35
-        self.frequency_range_end = self.config['frequency_range_end'] + 35
-        self.frequency_range = range(self.frequency_range_start, self.frequency_range_end)
+        self.frequency_range_start = self.config['frequency_range_start'] - 15
+        self.frequency_range_end = self.config['frequency_range_end'] + 15
+        self.frequency_range_num_points = self.config['frequency_range_num_points']
+        self.frequency_range = np.linspace(self.frequency_range_start, self.frequency_range_end, self.frequency_range_num_points)
         self.num_spikes = self.count_spikes()
         self.pointer = 0
         self.frames = 3 * (len(self.frequency_range))
@@ -73,8 +74,8 @@ class Spectrum:
         n_amp = self.config['noise_floor_high_energy_amplitude']
         n_freq = self.config['noise_floor_high_energy_frequency']
         
-        #noise_floor = n_base + n_amp * np.sin(n_freq * x)
-        noise_floor_value = rint + n_base + rfloat * n_amp * np.sin(n_freq * x)
+        noise_floor_value = n_base + rfloat * n_amp * np.sin(rfloat * n_freq * x)
+        # noise_floor_value = rint + n_base + rfloat * n_amp * np.sin(rfloat * n_freq * x)
 
         # Iterate through each set of spike parameters and compute Gaussian Curve for that spike, add to signal_spikes array
         signal_spike_value = 0
@@ -94,7 +95,7 @@ class Spectrum:
                 continue
         
         # Technically, this is wrong. 
-        # Adding the values together would be computing the 'superposition' of the signals
+        # Adding the values together gives the 'superposition' of the signals
         # What we should actually do is compute the convolution of the signals (np.convolve())
         y = noise_floor_value + signal_spike_value
 
@@ -122,7 +123,7 @@ class Spectrum:
             self.animate,  
             frames = self.frames,
             init_func=self.init,
-            interval = 15, 
+            interval = .1, 
             blit = True, 
             repeat = True)
 
@@ -135,11 +136,11 @@ class Spectrum:
     
     
 
-# with open('config/config.yaml', 'r') as f:
-#     config = yaml.load(f, Loader=yaml.FullLoader)
-# spectrum = Spectrum(config)
-# anim = spectrum.gen_animation() #.save('growingCoil1.mp4', writer = 'ffmpeg', fps = 30)
-# plt.show()
+with open('config/config.yaml', 'r') as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+spectrum = Spectrum(config)
+anim = spectrum.gen_animation() #.save('growingCoil1.mp4', writer = 'ffmpeg', fps = 30)
+plt.show()
 
 # saves the animation in our desktop 
 #anim.save('growingCoil.mp4', writer = 'ffmpeg', fps = 30) 

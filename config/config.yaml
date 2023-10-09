@@ -1,7 +1,7 @@
 # Frequency Range Parameters:
 frequency_range_start: 100
 frequency_range_end: 300  # Define your frequency range in Hz
-frequency_range_num_points: 1000  # Number of data points
+frequency_range_num_points: 2000  # Number of data points
 
 # Noise Floor Parameters:
   # Noise floor is two sine waves put together.
@@ -17,7 +17,7 @@ frequency_range_num_points: 1000  # Number of data points
 
 noise_floor_base_amplitude: 10.0 # Overall base amplitude of the noise floor (where it will exist on the y-axis)
 noise_floor_high_energy_amplitude: 3.0  # Amplitude of the high_energy part of the noise floor
-noise_floor_high_energy_frequency: 100000  # Frequency of the high_energy part of the noise floor in Hz
+noise_floor_high_energy_frequency: 3  # Frequency of the high_energy part of the noise floor in Hz
 noise_floor_low_energy_amplitude: 1.0 # Amplitude of low_energy (undulating) part of the noise floor
 noise_floor_low_energy_frequency: 0.01 # Frequency of the low_energy (undulating) part of the noise floor
 
@@ -32,26 +32,26 @@ noise_floor_low_energy_frequency: 0.01 # Frequency of the low_energy (undulating
   #     mu = Mean, or central position of the peak
   #     sigma = standard deviation or widith of the peak
 
-signal_spike_0_amplitude: 30.0
+signal_spike_0_amplitude: 50.0
 signal_spike_0_mu: 114.0
-signal_spike_0_sigma: 5.0
+signal_spike_0_sigma: 2.0
 
-signal_spike_1_amplitude: 70.0
+signal_spike_1_amplitude: 55.0
 signal_spike_1_mu: 140.0
-signal_spike_1_sigma: 5.0
+signal_spike_1_sigma: 2.0
 
 signal_spike_2_amplitude: 70.0
 signal_spike_2_mu: 180.0
-signal_spike_2_sigma: 5.0
+signal_spike_2_sigma: 2.0
 
-signal_spike_3_amplitude: 70.0
+signal_spike_3_amplitude: 45.0
 signal_spike_3_mu: 198.0
-signal_spike_3_sigma: 5.0
+signal_spike_3_sigma: 2.0
 
-# signal_spike_4_amplitude: 70.0
-# signal_spike_4_mu: 215.0
-# signal_spike_4_sigma: 5.0
+signal_spike_4_amplitude: 55.0
+signal_spike_4_mu: 215.0
+signal_spike_4_sigma: 2.0
 
-# signal_spike_5_amplitude: 70.0
-# signal_spike_5_mu: 230.0
-# signal_spike_5_sigma: 5.0
+signal_spike_5_amplitude: 70.0
+signal_spike_5_mu: 230.0
+signal_spike_5_sigma: 2.0
