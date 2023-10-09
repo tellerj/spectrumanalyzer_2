@@ -1,17 +1,10 @@
-from flask import Flask, render_template, send_from_directory, request, redirect, url_for, flash
+from flask import Flask, render_template, send_from_directory, request, redirect, url_for, flash, jsonify
 from datetime import datetime
 import yaml
 import argparse
-
-
 # Custom modules/imports for this project
 from web.forms import SettingsForm  # <--'SettingsForm' is the custom form to adjust signal parameters
 from spectrum import Spectrum
-
-# Initialize the Flask App
-app = Flask(__name__, template_folder='web/templates')
-app.secret_key = '32wps'  # Flask requirement to enable CSRF protection as well as the 'flash' method functionality
-app.config['SECRET_KEY'] = '32wps'
 
 # Parse command-line arguments, mainly to handle a user-specified config path
 def parse_args():
@@ -26,7 +19,6 @@ def load_config(config_file):
         config = yaml.load(f, Loader=yaml.FullLoader)
     return config
 
-# Helper function to update the running config
 def update_running_config(form):
     # Update the running config with form submission values
     global running_config
@@ -37,95 +29,84 @@ def update_running_config(form):
     running_config['frequency_range_num_points'] = form.frequency_range_num_points.data
     
     # Noise Floor Settings
-    running_config['noise_floor_params_base_amplitude'] = form.noise_floor_base_amplitude.data
-    running_config['noise_floor_params_high_energy_amplitude'] = form.noise_floor_high_energy_amplitude.data
-    running_config['noise_floor_params_high_energy_frequency'] = form.noise_floor_high_energy_frequency.data
-    running_config['noise_floor_params_low_energy_amplitude'] = form.noise_floor_low_energy_amplitude.data
-    running_config['noise_floor_params_low_energy_frequency'] = form.noise_floor_low_energy_frequency.data
+    running_config['noise_floor_base_amplitude'] = form.noise_floor_base_amplitude.data
+    running_config['noise_floor_high_energy_amplitude'] = form.noise_floor_high_energy_amplitude.data
+    running_config['noise_floor_high_energy_frequency'] = form.noise_floor_high_energy_frequency.data
+    running_config['noise_floor_low_energy_amplitude'] = form.noise_floor_low_energy_amplitude.data
+    running_config['noise_floor_low_energy_frequency'] = form.noise_floor_low_energy_frequency.data
     
     # Signal Spike Settings
-    for i in range(5):
-        running_config[f'signal_spike_{i}_amplitude'] = form[f'signal_spike_{i}_amplitude'].data
-        running_config[f'signal_spike_{i}_mu'] = form[f'signal_spike_{i}_mu'].data
-        running_config[f'signal_spike_{i}_sigma'] = form[f'signal_spike_{i}_sigma'].data
+    spike_list = list(range(6))#list(form.)
+    for i in spike_list:
+        # This is gross, but at least it's compact. I don't want to talk about it.
+        exec(f"running_config['signal_spike_{i}_amplitude'] = form.signal_spike_%d_amplitude.data" %i)
+        exec(f"running_config['signal_spike_{i}_mu'] = form.signal_spike_%d_mu.data" %i)
+        exec(f"running_config['signal_spike_{i}_sigma'] = form.signal_spike_%d_sigma.data" %i)
 
     generate_spectrum_animation(running_config)
 
-def generate_spectrum_animation(running_config, export_path="web/static/", export_filename='spectrum_animation.mp4'): 
-    # Create instance of spectrum graph and plot it
-    spectrum = Spectrum(running_config)
-    spectrum.save_animation(export_path + export_filename)
-    spectrum.gen_animation().save('web/static/spec_anni.gif', writer='pillow', fps=30)
-    return spectrum.gen_animation()
+def generate_spectrum_animation(config, filepath='web/static/', filename='spectrum_animation'): 
 
-# Initialize a global variable to store the running config
+    global animation_filename
+    animation_timestamp = datetime.now().strftime("%H%M%S")
+    
+    # Create instance of spectrum graph and plot it
+    print("[+] Generating spectrum animation...")
+    spectrum = Spectrum(config)
+    spectrum.gen_animation().save(filepath + filename + '_' + animation_timestamp + '.gif', writer='pillow', fps=30)
+    animation_filename = filename + '_' + animation_timestamp + '.gif'
+    print("[+] Spectrum animation generated.")
+    return spectrum, spectrum.gen_animation()
+
+# Initialize the Flask App
+app = Flask(__name__, template_folder='web/templates')
+app.secret_key = '32wps'  # Flask requirement to enable CSRF protection as well as the 'flash' method functionality
+app.config['SECRET_KEY'] = '32wps'  #something to do with CSRF, or something
 args = parse_args()
-running_config = load_config(args.config)
+running_config = load_config(args.config) # Initialize a global variable to store the running config
+spectrum, spectrum_animation = generate_spectrum_animation(running_config)
 
 # Initial root page. Renders the 'index.html' file showing an image of the Spectrum Analyzer
 @app.route('/')
 def index():
-    video_path = 'web/static/'
-    video_filename = 'spectrum_animation.mp4'
-    generate_spectrum_animation(running_config, export_path=video_path, export_filename=video_filename)
-    return render_template(
-        'index.html',
-        video_file = video_filename,
-        gif_filename = 'spec_anni.gif'
-        )
+    return render_template('index.html', gif_filename = animation_filename)
 
 # Settings modification page. Shows a form which is used to adjust the various signal parameters
 @app.route('/settings', methods=['GET','POST'])
 def settings():
 
-    global running_config
-
     # Instantiate the form from the template
     form = SettingsForm()
 
-    if request.method == 'POST' and form.validate_on_submit():
-        # Update the running config with form submission values
-        update_running_config(form)
-        flash('Settings updated successfully!', 'success')
-        return redirect(url_for('settings'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            # Update the running config with form submission values 
+            update_running_config(form)
+            flash('Settings updated successfully!', 'success')
+            return redirect(url_for('settings'))
+        else:
+            # Form validation failed
+            print("Form validation failed!")
     
-
     # # Populate the Frequency Range fields with current config data
-    # form.frequency_range_start.default = running_config['frequency_range']['start']
-    # form.frequency_range_end.default = running_config['frequency_range']['end']
-    # form.num_points.default = running_config['frequency_range']['num_points']
+    form.frequency_range_start.default = running_config['frequency_range_start']
+    form.frequency_range_end.default = running_config['frequency_range_end']
+    form.frequency_range_num_points.default = running_config['frequency_range_num_points']
     
     # # Populate the Noise Floor fields with current config data
-    # form.noise_floor_base_amplitude.default = running_config['noise_floor_params']['base_amplitude']
-    # form.noise_floor_high_energy_amplitude.default = running_config['noise_floor_params']['high_energy_amplitude']
-    # form.noise_floor_high_energy_frequency.default = running_config['noise_floor_params']['high_energy_frequency']
-    # form.noise_floor_low_energy_amplitude.default = running_config['noise_floor_params']['low_energy_amplitude']
-    # form.noise_floor_low_energy_frequency.default = running_config['noise_floor_params']['low_energy_frequency']
+    form.noise_floor_base_amplitude.default = running_config['noise_floor_base_amplitude']
+    form.noise_floor_high_energy_amplitude.default = running_config['noise_floor_high_energy_amplitude']
+    form.noise_floor_high_energy_frequency.default = running_config['noise_floor_high_energy_frequency']
+    form.noise_floor_low_energy_amplitude.default = running_config['noise_floor_low_energy_amplitude']
+    form.noise_floor_low_energy_frequency.default = running_config['noise_floor_low_energy_frequency']
     
     # # Populate the Signal Spike fields with current config data
-    # form.signal_spike_0_amplitude.default = running_config['signal_spike_params'][0]['amplitude']
-    # form.signal_spike_0_mu.default = running_config['signal_spike_params'][0]['mu']
-    # form.signal_spike_0_sigma.default = running_config['signal_spike_params'][0]['sigma']
-    
-    # form.signal_spike_1_amplitude.default = running_config['signal_spike_params'][1]['amplitude']
-    # form.signal_spike_1_mu.default = running_config['signal_spike_params'][1]['mu']
-    # form.signal_spike_1_sigma.default = running_config['signal_spike_params'][1]['sigma']
-    
-    # form.signal_spike_2_amplitude.default = running_config['signal_spike_params'][2]['amplitude']
-    # form.signal_spike_2_mu.default = running_config['signal_spike_params'][2]['mu']
-    # form.signal_spike_2_sigma.default = running_config['signal_spike_params'][2]['sigma']
-    
-    # form.signal_spike_3_amplitude.default = running_config['signal_spike_params'][3]['amplitude']
-    # form.signal_spike_3_mu.default = running_config['signal_spike_params'][3]['mu']
-    # form.signal_spike_3_sigma.default = running_config['signal_spike_params'][3]['sigma']
-    
-    # form.signal_spike_4_amplitude.default = running_config['signal_spike_params'][4]['amplitude']
-    # form.signal_spike_4_mu.default = running_config['signal_spike_params'][4]['mu']
-    # form.signal_spike_4_sigma.default = running_config['signal_spike_params'][4]['sigma']
-    
-    # form.signal_spike_5_amplitude.default = running_config['signal_spike_params'][5]['amplitude']
-    # form.signal_spike_5_mu.default = running_config['signal_spike_params'][5]['mu']
-    # form.signal_spike_5_sigma.default = running_config['signal_spike_params'][5]['sigma']
+    spike_list = list(range(spectrum.count_spikes()))
+    for i in spike_list:
+        # This is gross, but at least it's compact. I don't want to talk about it.
+        exec(f"form.signal_spike_%d_amplitude.default = running_config['signal_spike_{i}_amplitude']" %i)
+        exec(f"form.signal_spike_%d_mu.default = running_config['signal_spike_{i}_mu']" %i)
+        exec(f"form.signal_spike_%d_sigma.default = running_config['signal_spike_{i}_sigma']" %i)
 
     # Process the form with current config data
     form.process(obj=running_config)
@@ -136,6 +117,10 @@ def settings():
 def static_files(filename):
     # Serve static files (like the plot image) from the 'static' directory
     return send_from_directory('web/static', filename)
+
+@app.route('/get_animation_filename')
+def get_animation_filename():
+    return jsonify({'gif_filename_latest': animation_filename})
 
 # Page to handle saving off the current config -- triggered via POST
 @app.route('/save_config', methods=['POST'])

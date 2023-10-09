@@ -10,6 +10,8 @@
 
     <form method="POST" action="{{ url_for('settings') }}">
 
+        {{ form.hidden_tag() }}  <!-- This is flask-wtf form's way of handling the app's CSRF token-->
+
         <div>
             <!-- Frequency Range Settings -->
             <h2>Frequency Range Settings</h2>

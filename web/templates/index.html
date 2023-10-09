@@ -7,10 +7,32 @@
     <h1>Spectrum Analyzer</h1>
     <a href="{{ url_for('settings') }}">Settings</a>
     <br>
-    <div id="animation_html5"></div>
-    {{ animation_jshtml | safe }}
+    <!-- <div id="animation_html5"></div>
+    {{ animation_jshtml | safe }} -->
 
-    <img src="{{ url_for('static', filename=gif_filename) }}" alt="Spectrum Animation">
+    <img id="spectrum-image" src="{{ url_for('static', filename=gif_filename) }}" alt="Spectrum Animation">
+
+    <script>
+        const img = document.getElementById('spectrum-image');
+        let gifFilename = "{{ gif_filename }}";
+    
+        function updateGif() {
+            fetch("/get_animation_filename")
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.gif_filename_latest !== gifFilename) {
+                        // Update the GIF URL and timestamp
+                        img.src = "{{ url_for('static', filename='') }}" + data.gif_filename_latest;
+                        gifFilename = data.gif_filename_latest;
+                    }
+                })
+                .catch((error) => console.error("Error fetching GIF data: ", error));
+        }
+    
+        // Update the GIF every 5 seconds (adjust this interval as needed)
+        setInterval(updateGif, 10000);
+    </script>
+    
 
 </body>
 </html>
