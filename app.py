@@ -20,9 +20,36 @@ def load_config(config_file):
         config = yaml.load(f, Loader=yaml.FullLoader)
     return config
 
+def count_signal_spikes(running_config):
+    count = 0
+    for i, field in enumerate(running_config):
+        if field.startswith('signal_spike_') and field.endswith('amplitude'):
+            count += 1
+    return count
+
 def update_running_config(form):
     # Update the running config with form submission values
     global running_config
+
+    # Get the number of signal spikes from the form submission
+    new_num_spikes = form.count_signal_spikes()
+
+    # Get the number of signal spikes from the current running config
+    curr_num_spikes = count_signal_spikes(running_config)
+
+    # Compare the counted signal spikes to theexisting count in the running config
+    if new_num_spikes < curr_num_spikes:
+        # Remove excess signal spike entries from the running config
+        for i in range(new_num_spikes, curr_num_spikes):
+            del running_config[f'signal_spike_{i}_amplitude']
+            del running_config[f'signal_spike_{i}_mu']
+            del running_config[f'signal_spike_{i}_sigma']
+    elif new_num_spikes > curr_num_spikes:
+        # Add new signal spike entries to the running config
+        for i in range(curr_num_spikes, new_num_spikes):
+            running_config[f'signal_spike_{i}_amplitude'] = 0.0
+            running_config[f'signal_spike_{i}_mu'] = 0.0
+            running_config[f'signal_spike_{i}_sigma'] = 0.0        
 
     # Frequency Range Settings
     running_config['frequency_range_start'] = form.frequency_range_start.data
@@ -37,12 +64,15 @@ def update_running_config(form):
     running_config['noise_floor_low_energy_frequency'] = form.noise_floor_low_energy_frequency.data
     
     # Signal Spike Settings
-    spike_list = list(range(6))#list(form.)
-    for i in spike_list:
+    for i in range(new_num_spikes):
+        running_config[f'signal_spike_{i}_amplitude'] = form[f'signal_spike_{i}_amplitude'].data
+        running_config[f'signal_spike_{i}_mu'] = form[f'signal_spike_{i}_mu'].data
+        running_config[f'signal_spike_{i}_sigma'] = form[f'signal_spike_{i}_sigma'].data
+
         # This is gross, but at least it's compact. I don't want to talk about it.
-        exec(f"running_config['signal_spike_{i}_amplitude'] = form.signal_spike_%d_amplitude.data" %i)
-        exec(f"running_config['signal_spike_{i}_mu'] = form.signal_spike_%d_mu.data" %i)
-        exec(f"running_config['signal_spike_{i}_sigma'] = form.signal_spike_%d_sigma.data" %i)
+        # exec(f"running_config['signal_spike_{i}_amplitude'] = form.signal_spike_%d_amplitude.data" %i)
+        # exec(f"running_config['signal_spike_{i}_mu'] = form.signal_spike_%d_mu.data" %i)
+        # exec(f"running_config['signal_spike_{i}_sigma'] = form.signal_spike_%d_sigma.data" %i)
 
     generate_spectrum_animation(running_config)
     delete_old_animations()

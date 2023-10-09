@@ -39,6 +39,13 @@ class SettingsForm(FlaskForm):
     signal_spike_5_amplitude = FloatField('Signal Spike Fox - Amplitude',validators=[InputRequired()], default=0.0)
     signal_spike_5_mu = FloatField('Signal Spike Fox - Mu (Center Frequency)',validators=[InputRequired()], default=0.0)
     signal_spike_5_sigma = FloatField('Signal Spike Fox - Sigma (Width)',validators=[InputRequired()], default=0.0)
+
+    def count_signal_spikes(self):
+        count = 0
+        for field_name, field in self._fields.items():
+            if field_name.startswith('signal_spike_') and field_name.endswith('amplitude'):
+                count += 1
+        return count
     
     # Submit Form
     submit = SubmitField('Update Settings')

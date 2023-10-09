@@ -7,15 +7,12 @@
 ### Spectrum.py
 - make line points convolve, rather than superimpose
 
-
 ### App.py
 - put the app.py functions in an app.py class? Make an app.py config? 
-- make update_running_config count signal spikes properly
 
 ### Index.html
 
 ### Settings.html
-- make background color dark grey
 - add inject buttons to simulate different scenarios
 - add functionality to add or remove spikes on the /settings page
 
@@ -33,3 +30,5 @@
 - Make background color dark grey
 - center animation on page
 - make the regen of the animation clean up old animations
+- make update_running_config count signal spikes properly
+- make background color dark grey
