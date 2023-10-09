@@ -9,22 +9,30 @@ plt.rcParams['animation.ffmpeg_path'] = "C:\\Users\\telle\\AppData\\Local\\Micro
 class Spectrum:
     def __init__(self,config = None):
         self.config = config
-        self.frequency_range_start = self.config['frequency_range_start']
-        self.frequency_range_end = self.config['frequency_range_end']
+        self.frequency_range_start = self.config['frequency_range_start'] - 35
+        self.frequency_range_end = self.config['frequency_range_end'] + 35
         self.frequency_range = range(self.frequency_range_start, self.frequency_range_end)
         self.num_spikes = self.count_spikes()
         self.pointer = 0
-        self.frames = 2 * (len(self.frequency_range))
+        self.frames = 3 * (len(self.frequency_range))
         self.dt = .1
 
-        self.fig, self.axis = plt.subplots()
-        self.axis.set_xlim(self.frequency_range_start, self.frequency_range_end)
+        #Set up the plot, styling, size, etc.
+        fig_width = .7 * 1920  # 70% of 1080p display width
+        fig_height = .7 * 1080 # 70% of 1080p display height
+        self.fig, self.axis = plt.subplots(facecolor='grey', figsize=(fig_width / 80, fig_height / 80)) # Divide by 80 for dpi adjustment
+        self.axis.grid(True, color='darkgrey', lw=.5)
+        self.axis.set_facecolor('black')
+        self.axis.set_title('Spectrum Analzer')
+        self.axis.set_xlabel("Frequency (MHz)")
+        self.axis.set_ylabel("Amplitude (%)")
+        self.axis.set_xlim(self.config['frequency_range_start'], self.config['frequency_range_end'])
         self.axis.set_ylim(0, 100)
         self.xdata, self.ydata = [],[]
         for i in self.frequency_range:
             self.xdata.append(None)
             self.ydata.append(None)
-        self.line, = self.axis.plot([],[], lw = 2)
+        self.line, = self.axis.plot([],[], lw = 1, color='lightgreen')
 
     def count_spikes(self):
         '''Count the number of signal spikes in the current config'''
@@ -66,7 +74,7 @@ class Spectrum:
         n_freq = self.config['noise_floor_high_energy_frequency']
         
         #noise_floor = n_base + n_amp * np.sin(n_freq * x)
-        noise_floor_value = rint + n_base + rfloat * n_amp * np.sin(rfloat * n_freq * x)
+        noise_floor_value = rint + n_base + rfloat * n_amp * np.sin(n_freq * x)
 
         # Iterate through each set of spike parameters and compute Gaussian Curve for that spike, add to signal_spikes array
         signal_spike_value = 0
@@ -77,6 +85,11 @@ class Spectrum:
 
             try:
                 signal_spike_value += s_amp * np.exp( -0.5 * ( (x - s_mu) ** 2) / (s_sigma ** 2) )
+
+                # Add a label at the center frequency of the signal spike
+                if x == s_mu:
+                    self.axis.annotate(f"+\n|\n|\nSignal {j}\n{x}MHz", (s_mu, 0), xytext=(0, 0), textcoords='offset points', ha='center', va='bottom', rotation=0, color='white')
+
             except: 
                 continue
 
@@ -106,7 +119,7 @@ class Spectrum:
             self.animate,  
             frames = self.frames,
             init_func=self.init,
-            interval = 20, 
+            interval = 15, 
             blit = True, 
             repeat = True)
 

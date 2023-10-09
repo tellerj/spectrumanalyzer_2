@@ -6,12 +6,7 @@
 
 ### Spectrum.py
 - make line points convolve, rather than superimpose
-- Change line color to yellow or green, and thinner
-- change plot background to black with grey grid lines
-- add axes labels
-- resize animation to be most of a 1080 screen width
-- extend boundaries of the line that is computed out about 10 points at both ends to make it animate off-screen
-- tune number of frames to ensure the animation always starts and ends off-screen
+
 
 ### App.py
 - make the regen of the animation clean up old animations
@@ -31,3 +26,10 @@
 # Done
 - Make form default values match the current running config
 - make form submission update the .gif of the spectrum
+- Change line color to yellow or green, and thinner
+- change plot background to black with grey grid lines
+- add axes labels
+- resize animation to be most of a 1080 screen width
+- extend boundaries of the line that is computed out about 10 points at both ends to make it animate off-screen
+- tune number of frames to ensure the animation always starts and ends off-screen
+- add axes labels at the center frequency of each spike
