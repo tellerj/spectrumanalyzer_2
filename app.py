@@ -2,6 +2,7 @@ from flask import Flask, render_template, send_from_directory, request, redirect
 from datetime import datetime
 import yaml
 import argparse
+import os
 # Custom modules/imports for this project
 from web.forms import SettingsForm  # <--'SettingsForm' is the custom form to adjust signal parameters
 from spectrum import Spectrum
@@ -44,6 +45,20 @@ def update_running_config(form):
         exec(f"running_config['signal_spike_{i}_sigma'] = form.signal_spike_%d_sigma.data" %i)
 
     generate_spectrum_animation(running_config)
+    delete_old_animations()
+
+# Function to delete old animation files
+MAX_OLD_ANIMATIONS = 2
+def delete_old_animations():
+    animation_dir = 'web/static/'
+    files = os.listdir(animation_dir)
+    gif_files = [file for file in files if file.endswith('.gif')]
+    gif_files.sort(key=lambda x: os.path.getctime(os.path.join(animation_dir, x)))
+
+    # Delete old animation files if there are more than MAX_OLD_ANIMATIONS
+    if len(gif_files) > MAX_OLD_ANIMATIONS:
+        for old_animation in gif_files[:-MAX_OLD_ANIMATIONS]:
+            os.remove(os.path.join(animation_dir, old_animation))
 
 def generate_spectrum_animation(config, filepath='web/static/', filename='spectrum_animation'): 
 
@@ -65,6 +80,7 @@ app.config['SECRET_KEY'] = '32wps'  #something to do with CSRF, or something
 args = parse_args()
 running_config = load_config(args.config) # Initialize a global variable to store the running config
 spectrum, spectrum_animation = generate_spectrum_animation(running_config)
+delete_old_animations()
 
 # Initial root page. Renders the 'index.html' file showing an image of the Spectrum Analyzer
 @app.route('/')

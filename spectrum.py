@@ -18,7 +18,7 @@ class Spectrum:
         self.dt = .1
 
         #Set up the plot, styling, size, etc.
-        fig_width = .7 * 1920  # 70% of 1080p display width
+        fig_width = .80 * 1920  # 80% of 1080p display width
         fig_height = .7 * 1080 # 70% of 1080p display height
         self.fig, self.axis = plt.subplots(facecolor='grey', figsize=(fig_width / 80, fig_height / 80)) # Divide by 80 for dpi adjustment
         self.axis.grid(True, color='darkgrey', lw=.5)
@@ -88,11 +88,14 @@ class Spectrum:
 
                 # Add a label at the center frequency of the signal spike
                 if x == s_mu:
-                    self.axis.annotate(f"+\n|\n|\nSignal {j}\n{x}MHz", (s_mu, 0), xytext=(0, 0), textcoords='offset points', ha='center', va='bottom', rotation=0, color='white')
+                    self.axis.annotate(f"+\n|\n|\nSignal {j}\n{x} MHz", (s_mu, 0), xytext=(0, 0), textcoords='offset points', ha='center', va='bottom', rotation=0, color='white')
 
             except: 
                 continue
-
+        
+        # Technically, this is wrong. 
+        # Adding the values together would be computing the 'superposition' of the signals
+        # What we should actually do is compute the convolution of the signals (np.convolve())
         y = noise_floor_value + signal_spike_value
 
         # change existing x and y values to newly computed ones

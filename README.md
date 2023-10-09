@@ -9,13 +9,10 @@
 
 
 ### App.py
-- make the regen of the animation clean up old animations
 - put the app.py functions in an app.py class? Make an app.py config? 
 - make update_running_config count signal spikes properly
 
 ### Index.html
-- Make background color dark grey
-- center animation on page
 
 ### Settings.html
 - make background color dark grey
@@ -33,3 +30,6 @@
 - extend boundaries of the line that is computed out about 10 points at both ends to make it animate off-screen
 - tune number of frames to ensure the animation always starts and ends off-screen
 - add axes labels at the center frequency of each spike
+- Make background color dark grey
+- center animation on page
+- make the regen of the animation clean up old animations

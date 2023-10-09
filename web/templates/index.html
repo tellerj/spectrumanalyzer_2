@@ -2,10 +2,18 @@
 <html>
 <head>
     <title>Spectrum Analyzer</title>
+    <style>
+        /* Center the GIF horizontally and vertically */
+        #spectrum-image {
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
 </head>
-<body>
+<body style="background-color: grey;">
     <h1>Spectrum Analyzer</h1>
-    <a href="{{ url_for('settings') }}">Settings</a>
+    <a href="{{ url_for('settings') }}" style="font-size:x-large; color:aqua;">Settings</a>
     <br>
     <!-- <div id="animation_html5"></div>
     {{ animation_jshtml | safe }} -->
