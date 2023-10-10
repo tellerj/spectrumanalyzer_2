@@ -40,12 +40,13 @@ The Spectrum Analyzer Web Application is a tool for visualizing and configuring 
 2. Install Dependencies (included)
 
     ```bash
-    pip install -r /dependencies/requirements.txt --find-links=/dependencies/packages
+    pip install --no-index -r /dependencies/requirements.txt --find-links=/dependencies/packages
     ```
 
 3. (Optional, recommended) Create Virtual Environment
 
     ```bash
+    python -m pipenv install
     pipenv install
     pipenv shell
     ```
@@ -57,7 +58,7 @@ The Spectrum Analyzer Web Application is a tool for visualizing and configuring 
     ```
     The application should now be running at `http://localhost:5000`
     
-    *NOTE: Initial startup takes 30-40 seconds since the animation must be generated*
+    *NOTE: Initial startup takes about a minute and 32 seconds since the animation must be generated.wait for `[+] Spectrum animation generated.` console message.*
 
 ## Usage
 

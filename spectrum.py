@@ -2,7 +2,6 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt 
 import numpy as np 
 import yaml
-from IPython.display import HTML as html
 
 plt.rcParams['animation.ffmpeg_path'] = "C:\\Users\\telle\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-6.0-full_build\\bin\\ffmpeg.exe"
 
@@ -14,6 +13,7 @@ class Spectrum:
         self.frequency_range_num_points = self.config['frequency_range_num_points']
         self.frequency_range = np.linspace(self.frequency_range_start, self.frequency_range_end, self.frequency_range_num_points)
         self.num_spikes = self.count_spikes()
+        self.signal_spike_center_frequencies = [config[f'signal_spike_{i}_mu'] for i in range(self.num_spikes)]         # Extract center frequencies of signal spikes
         self.pointer = 0
         self.frames = 3 * (len(self.frequency_range))
         self.dt = .1
@@ -46,6 +46,11 @@ class Spectrum:
     def save_animation(self, filename):
         anim = self.gen_animation()
         anim.save(filename, writer='ffmpeg', fps=30)
+
+    def plot_signal_spike_labels(self):
+        # Set custom labels on the x-axis at the center frequencies
+        for i, freq in enumerate(self.signal_spike_center_frequencies):
+            self.axis.annotate(f"+\n|\n|\nSignal {i}\n{freq} MHz", (freq, 0), xytext=(0, 0), textcoords='offset points', ha='center', va='bottom', rotation=0, color='white')
 
     def init(self): 
         for i in self.frequency_range:
@@ -86,11 +91,6 @@ class Spectrum:
 
             try:
                 signal_spike_value += s_amp * np.exp( -0.5 * ( (x - s_mu) ** 2) / (s_sigma ** 2) )
-
-                # Add a label at the center frequency of the signal spike
-                if x == s_mu:
-                    self.axis.annotate(f"+\n|\n|\nSignal {j}\n{x} MHz", (s_mu, 0), xytext=(0, 0), textcoords='offset points', ha='center', va='bottom', rotation=0, color='white')
-
             except: 
                 continue
         
@@ -110,6 +110,9 @@ class Spectrum:
 
         #set line data to newly updated set of points
         self.line.set_data(self.xdata, self.ydata)
+
+        # Plot annotations at each signal spike center point
+        self.plot_signal_spike_labels()
 
         self.pointer +=1
         
@@ -135,7 +138,7 @@ class Spectrum:
         return anim
     
     
-
+# # Un-comment to be able to run this module directly and see the spectrum graph
 with open('config/config.yaml', 'r') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 spectrum = Spectrum(config)
