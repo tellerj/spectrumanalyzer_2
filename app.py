@@ -190,4 +190,5 @@ def save_config():
     return redirect(url_for('settings'))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
+    # app.run(debug=True)
