@@ -30,7 +30,7 @@ noise_floor_low_energy_frequency: 0.01 # Frequency of the low_energy (undulating
   #   Where: 
   #     amp = amplitude of the peak
   #     mu = Mean, or central position of the peak
-  #     sigma = standard deviation or widith of the peak
+  #     sigma = standard deviation or width of the peak
 
 signal_spike_0_amplitude: 50.0
 signal_spike_0_mu: 114.0
