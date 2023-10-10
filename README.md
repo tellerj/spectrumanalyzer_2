@@ -2,6 +2,8 @@
 
 The Spectrum Analyzer Web Application is a tool for visualizing and configuring spectrum data. It allows you to generate animated spectrum plots with signal spikes and noise floor settings.
 
+![image](web/static/spec-annie.png)
+
 ## Table of Contents
 
 - [Spectrum Analyzer Web Application](#spectrum-analyzer-web-application)

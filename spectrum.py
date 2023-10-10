@@ -139,11 +139,11 @@ class Spectrum:
     
     
 # # Un-comment to be able to run this module directly and see the spectrum graph
-with open('config/config.yaml', 'r') as f:
-    config = yaml.load(f, Loader=yaml.FullLoader)
-spectrum = Spectrum(config)
-anim = spectrum.gen_animation() #.save('growingCoil1.mp4', writer = 'ffmpeg', fps = 30)
-plt.show()
+# with open('config/config.yaml', 'r') as f:
+#     config = yaml.load(f, Loader=yaml.FullLoader)
+# spectrum = Spectrum(config)
+# anim = spectrum.gen_animation()
+# plt.show()
 
 # saves the animation in our desktop 
 #anim.save('growingCoil.mp4', writer = 'ffmpeg', fps = 30) 
